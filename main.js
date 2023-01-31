@@ -1,45 +1,29 @@
-console.log('hello world')
+const {crawlPage} = require('./crawl.js')
 
-
-// storage for debugging
-
-
-const { JSDOM } = require('jsdom')
-
-function getURLsFromHTML(htmlBody, baseURL) {
-    const urls = []
-    const dom = new JSDOM(htmlBody)
-    const linkElements = dom.window.document.querySelectorAll('a')
-    for (const linkElement of linkElements) {
-        urls.push(linkElement.href)
+function main() {
+    if (process.argv.length < 3) {
+        console.log("no website provided")
+        process.exit(1)
     }
-    return urls
+    if (process.argv.length > 3) {
+        console.log("too many command line args")
+        process.exit(1)
+    }
+    const baseURL = process.argv[2]
+
+    console.log(`starting crawl of ${baseURL}`)
+    crawlPage(baseURL)
+
 }
 
-// import this:
-getURLsFromHTML
 
 
+/* we use 3 because:
+1. the first argument is the interpreter (node is technically the name of our program)
+2. the second argument is the name of our code (the entrypoint file)
+3. the third argument is the one we're passing into our program
 
-// test
+Check for > 3 also so people don't pass in two + websites simultaneously 
+*/
 
-test('getURLsFromHTML', () => {
-    const inputHTMLBody = `
-    <html>
-        <body>
-            <a href="https://blog.boot.dev">
-                Boot.dev Blog
-            </a>
-        </body>
-    </html>
-    `
-    const inputBaseURL = "https://blog.boot.dev"
-    const actual = getURLsFromHTML(inputHTMLBody, inputBaseURL)
-    const expected = ["https://blog.boot.dev"]
-    expect(actual).toEqual(expected)
-
-})
-
-// stub it out
-// use back-ticks!!
-// test returned empty array
+main()
